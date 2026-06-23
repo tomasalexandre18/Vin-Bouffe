@@ -28,3 +28,8 @@ CREATE TABLE "mapping_wines_harmonize_the_meal_db" (
 
     CONSTRAINT "mapping_wines_harmonize_the_meal_db_pkey" PRIMARY KEY ("harmonize_text")
 );
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+CREATE INDEX wine_name_trgm_unaccent_idx ON "wines" USING GIN (wine_name gin_trgm_ops);
