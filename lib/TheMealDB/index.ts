@@ -1,23 +1,33 @@
-// Regroupe les différentes FONCTIONS de l'API
+// Fonction API
 const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
 
 export const MealDB = {
+  filtrerParIngredient: async (ingredient: string) => {
+    const res = await fetch(`${BASE_URL}/filter.php?i=${ingredient}`);
+    const data: {
+      meals: {
+        idMeal: string;
+        strMeal: string;
+        strMealThumb: string;
+      }[] | null;
+    } = await res.json();
+
+    return data;
+  },
 
   obtenirPlatParId: async (id: string) => {
     const res = await fetch(`${BASE_URL}/lookup.php?i=${id}`);
-    return res.json();
-  },
+    const data: {
+      meals: {
+        idMeal: string;
+        strMeal: string;
+        strMealThumb: string;
+        strInstructions: string;
+        strCategory: string;
+        strArea: string;
+      }[] | null;
+    } = await res.json();
 
-filtrerParIngredient: async (ingredient: string) => {
-  const res = await fetch(
-    `${BASE_URL}/filter.php?i=${ingredient}`
-  );
-
-  const data = await res.json();
-
-  return {
-    meals: data.meals || []
-  };
-}
-
+    return data;
+  }
 };
