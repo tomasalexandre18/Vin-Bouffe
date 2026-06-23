@@ -1,8 +1,7 @@
-// Fonction API
 const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
 
-export const MealDB = {
-  filtrerParIngredient: async (ingredient: string) => {
+export const TheMealDB = {
+  getMealsByIngredient: async (ingredient: string) => {
     const res = await fetch(`${BASE_URL}/filter.php?i=${ingredient}`);
     const data: {
       meals: {
@@ -15,7 +14,7 @@ export const MealDB = {
     return data;
   },
 
-  obtenirPlatParId: async (id: string) => {
+  getMealById: async (id: string) => {
     const res = await fetch(`${BASE_URL}/lookup.php?i=${id}`);
     const data: {
       meals: {
