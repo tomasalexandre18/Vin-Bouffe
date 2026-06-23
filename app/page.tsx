@@ -1,59 +1,38 @@
 "use client";
 
+import { MealDB } from "@/lib/TheMealDB";
 import { useState } from "react";
 
 export default function Home() {
-  const [wine, setWine] = useState("");
+  const [ingredient, setIngredient] = useState("");
   const [meals, setMeals] = useState<any[]>([]);
   const [selectedMeal, setSelectedMeal] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  //  mapping 
-  const wineToIngredient = (wine: string) => {
-    const w = wine.toLowerCase();
-
-    if (w.includes("rouge")) return "beef";
-    if (w.includes("blanc")) return "chicken";
-    if (w.includes("rose")) return "salmon";
-    if (w.includes("vin")) return "chicken";
-
-    return "chicken"; 
-  };
-
-  //  recherche plats
   const searchMeals = async () => {
-    if (!wine || wine.trim().length < 2) return;
+    if (!ingredient || ingredient.trim().length < 2) return;
 
     setLoading(true);
     setMeals([]);
     setSelectedMeal(null);
 
-    const ingredient = wineToIngredient(wine);
-
     try {
-      const res = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/search.php?s=${ingredient}`
+      const data = await MealDB.filtrerParIngredient(
+        ingredient.trim().toLowerCase()
       );
-
-      const data = await res.json();
 
       setMeals(data.meals || []);
     } catch (err) {
-      console.log("Erreur API:", err);
+      console.log("Erreur API :", err);
       setMeals([]);
     }
 
     setLoading(false);
   };
 
-  // détail recette
   const getMealDetails = async (id: string) => {
     try {
-      const res = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-      );
-
-      const data = await res.json();
+      const data = await MealDB.obtenirPlatParId(id);
       setSelectedMeal(data.meals?.[0] || null);
     } catch (err) {
       console.log("Erreur detail:", err);
@@ -63,21 +42,19 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0B0B10] text-white px-6 py-10">
 
-      {/* TITLE */}
       <h1 className="text-5xl text-center font-serif text-[#F2CF93] mb-4">
-        Accord 🍷
+        Recherche de recettes
       </h1>
 
       <p className="text-center text-[#C39AA8] mb-10">
-        Trouve des plats selon ton vin
+        Recherche par ingrédient
       </p>
 
-      {/* SEARCH */}
       <div className="flex gap-2 max-w-xl mx-auto mb-10">
         <input
-          value={wine}
-          onChange={(e) => setWine(e.target.value)}
-          placeholder="Ex: vin rouge, vin blanc..."
+          value={ingredient}
+          onChange={(e) => setIngredient(e.target.value)}
+          placeholder="Ex: chicken, beef, garlic..."
           className="w-full p-4 rounded-xl bg-white/5 border border-white/10 outline-none"
         />
 
@@ -89,14 +66,12 @@ export default function Home() {
         </button>
       </div>
 
-      {/* LOADING */}
       {loading && (
         <p className="text-center text-white/60">
-          Recherche des accords...
+          Chargement...
         </p>
       )}
 
-      {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {meals.map((meal) => (
@@ -117,7 +92,7 @@ export default function Home() {
               </h2>
 
               <p className="text-sm text-white/60">
-                {meal.strCategory} • {meal.strArea}
+                ID : {meal.idMeal}
               </p>
 
               <button
@@ -133,7 +108,6 @@ export default function Home() {
 
       </div>
 
-      {/* DÉTAIL RECETTE */}
       {selectedMeal && (
         <div className="mt-12 max-w-3xl mx-auto bg-[#271320] p-6 rounded-2xl border border-white/10">
 
@@ -146,19 +120,15 @@ export default function Home() {
             {selectedMeal.strMeal}
           </h2>
 
-          <p className="text-white/70 mb-2">
-            <b>Catégorie :</b> {selectedMeal.strCategory}
+          <p>
+            Catégorie : {selectedMeal.strCategory}
           </p>
 
-          <p className="text-white/70 mb-4">
-            <b>Origine :</b> {selectedMeal.strArea}
+          <p>
+            Origine : {selectedMeal.strArea}
           </p>
 
-          <h3 className="text-[#C39AA8] mb-2">
-            Instructions
-          </h3>
-
-          <p className="text-white/80 leading-relaxed whitespace-pre-line">
+          <p className="mt-4 whitespace-pre-line">
             {selectedMeal.strInstructions}
           </p>
 
