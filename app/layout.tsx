@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Vincore",
-  description: "Vincore select the best meal for your wines",
+  title: "WineCore",
+  description: "Search for a wine and discover perfectly matching dishes.",
 };
 
 export default function RootLayout({
