@@ -1,4 +1,5 @@
 import prisma from "@/libs/db";
+import {TheMealDB} from "@/libs/TheMealDB";
 
 export async function GET(request: Request): Promise<Response> {
     const { searchParams } = new URL(request.url)
@@ -23,8 +24,7 @@ export async function GET(request: Request): Promise<Response> {
             },
         },
     });
-
-    const recommended_meal = TheMealDB.get_meals_from_ingredients(mapping.map(m => m.the_meal_text));
+    const recommended_meal = await TheMealDB.getMealsByIngredient(mapping[0].the_meal_text);
 
     return Response.json(recommended_meal);
 }
