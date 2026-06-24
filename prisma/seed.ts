@@ -75,6 +75,35 @@ async function main() {
     }
 
     console.log('Import terminé.');
+
+    // load harmonize_mealdb_mapping.csv
+    // harmonize_term,mealdb_ingredients
+    const harmonizeCsvPath = path.join(__dirname, 'harmonize_mealdb_mapping.csv');
+    const harmonizeFileContent = fs.readFileSync(harmonizeCsvPath, 'utf-8');
+
+    const harmonizeRecords: Record<string, string>[] = parse(harmonizeFileContent, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true,
+    });
+
+    console.log(`${harmonizeRecords.length} harmonize mappings à importer.`);
+
+    // one shot
+
+    //model mapping_wines_harmonize_the_meal_db {
+    //   harmonize_text String @id
+    //   the_meal_text  String
+    // }
+    await prisma.mapping_wines_harmonize_the_meal_db.createMany({
+        data: harmonizeRecords.map((row) => ({
+            harmonize_text: row.harmonize_term,
+            the_meal_text: row.mealdb_ingredients,
+        })),
+        skipDuplicates: true,
+    });
+
+    console.log('Import des harmonize mappings terminé.');
 }
 
 main()
