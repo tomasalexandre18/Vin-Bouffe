@@ -39,5 +39,5 @@
 }
 
 body {
-  @apply bg-bg text-prune font-sans font-light;
+  @apply bg-bg text-prune font-display font-light;
 }
