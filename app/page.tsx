@@ -3,6 +3,8 @@ import SearchBar from "./components/ui/SearchBar";
 import Divider from "./components/ui/Divider";
 import Image from "next/image";
 
+import Link from 'next/link'
+
 const WINE_FILTERS = [
   { label: "Red",      dotClass: "bg-bordeaux" },
   { label: "White",    dotClass: "bg-sable" },
@@ -21,9 +23,11 @@ export default function Home() {
         </div>
 
         {/* Heading */}
+        <Link href="/listdish">
         <h1 className="font-display text-[2.15rem] leading-[1.15] font-semibold text-creme">
           Which bottle pairs with this meal?
         </h1>
+        </Link>
 
         {/* Search */}
         <SearchBar />
