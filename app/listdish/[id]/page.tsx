@@ -46,7 +46,7 @@ export default async function ListDishPage({
       <div className="flex items-center m-4 gap-2 rounded-xl border-2 border-[#9D1B3F] bg-white p-2 shadow-md">
         <img src={imageWine} />
         <div className="flex flex-col text-lg">
-          <h1 className="text-2xl">{wine.wine_name}</h1>
+          <h1 className="text-2xl font-bold">{wine.wine_name}</h1>
           <p>{wine.type}</p>
           <p>Country : {wine.country}</p>
           <p>Acidity : {wine.acidity}</p>
