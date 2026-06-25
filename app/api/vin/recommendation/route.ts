@@ -1,8 +1,15 @@
 import prisma from "@/libs/db";
 import {TheMealDB} from "@/libs/TheMealDB";
 import {shuffleArray} from "@/libs/helper/shuffle";
+import {rateLimit} from "@/libs/rate-limit";
 
 export async function GET(request: Request): Promise<Response> {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    const ok = await rateLimit(ip, 3, 60); // 10 requests per minute
+    if (!ok.allowed) {
+        return Response.json({ message: 'Too many requests' }, { status: 429 });
+    }
+
     const { searchParams } = new URL(request.url)
     const wine_id = searchParams.get('wine_id')
     if (!wine_id || isNaN(parseInt(wine_id, 10))) {

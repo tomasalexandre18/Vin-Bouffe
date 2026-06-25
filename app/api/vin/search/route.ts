@@ -1,4 +1,6 @@
 import prisma from "@/libs/db";
+import {RateLimiter} from "effect/RateLimiter";
+import {rateLimit} from "@/libs/rate-limit";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,6 +21,13 @@ interface WineRow {
 }
 
 export async function GET(request: Request): Promise<Response> {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    const ok = await rateLimit(ip, 10, 5); // 10 requests per minute
+    if (!ok.allowed) {
+        return Response.json({ message: 'Too many requests' }, { status: 429 });
+    }
+
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query') || '';
     const limit = parseInt(searchParams.get('limit') || String(DEFAULT_LIMIT), 10);
