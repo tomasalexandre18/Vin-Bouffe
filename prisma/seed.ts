@@ -5,7 +5,6 @@ import fs from 'fs';
 import path from 'path';
 import {Prisma} from "@/app/generated/prisma/client";
 
-
 function parseArrayField(value: string | undefined): string[] {
     if (!value || value.trim() === '') return [];
     const cleaned = value.trim().replace(/^\[|\]$/g, '');
