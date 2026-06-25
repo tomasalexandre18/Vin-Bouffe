@@ -35,8 +35,8 @@ function WineItem({ wine }: { wine: WineResult }) {
     <Link href={`/listdish/${wine.wine_id}`}>
       <li className="flex items-center gap-3 px-5 py-3.5 hover:bg-creme cursor-pointer border-b border-line-l last:border-0 transition-colors">
         <div className="flex-1 min-w-0">
-          <p className="font-sans font-medium text-sm text-prune truncate">{wine.wine_name}</p>
-          {meta && <p className="font-sans text-xs text-taupe truncate">{meta}</p>}
+          <p className="font-medium text-sm text-prune truncate">{wine.wine_name}</p>
+          {meta && <p className="text-xs text-taupe truncate">{meta}</p>}
         </div>
         <span className="text-or shrink-0 text-base">›</span>
       </li>
