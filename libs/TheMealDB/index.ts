@@ -36,7 +36,7 @@ interface Ingredient {
     measure: string;
 }
 
-interface Meal {
+export interface Meal {
     id: string;
     name: string;
     alternateName: string | null;
