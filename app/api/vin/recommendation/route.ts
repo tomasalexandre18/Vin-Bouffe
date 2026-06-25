@@ -1,5 +1,5 @@
 import prisma from "@/libs/db";
-import {TheMealDB} from "@/libs/TheMealDB";
+import {Meal, TheMealDB} from "@/libs/TheMealDB";
 import {shuffleArray} from "@/libs/helper/shuffle";
 import {rateLimit} from "@/libs/rate-limit";
 
@@ -35,15 +35,17 @@ export async function GET(request: Request): Promise<Response> {
 
     console.log(mapping, harmonizes);
 
-    const final_recommended_meal = [];
-    for (const map of mapping) {
-        const meal = await TheMealDB.getMealsByIngredient(map.the_meal_text);
-        if (meal) {
-            final_recommended_meal.push(meal["meals"]);
-        } else {
-            console.log(`No meals found for ingredient: ${map.the_meal_text}`)
+    const results = await Promise.all(
+        mapping.map(map => TheMealDB.getMealsByIngredient(map.the_meal_text))
+    );
+
+    const final_recommended_meal = results.flatMap((meal, i) => {
+        if (!meal) {
+            console.log(`No meals found for ingredient: ${mapping[i].the_meal_text}`);
+            return [];
         }
-    }
+        return [meal["meals"]] as Meal[];
+    });
 
     if (final_recommended_meal.length === 0) {
         return Response.json({ message: 'No recommended meals found for this wine' }, { status: 404 })
