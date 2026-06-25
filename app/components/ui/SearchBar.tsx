@@ -108,7 +108,7 @@ export default function SearchBar() {
           onFocus={() => results.length > 0 && setIsOpen(true)}
           placeholder="Search a wine..."
           aria-label="Search a wine"
-          className="w-full px-5 py-3.5 pr-14 rounded-pill bg-creme text-prune placeholder:text-taupe text-sm outline-none focus:ring-2 focus:ring-or/50 border-2 border-or caret-or selection:bg-or/30"
+          className="w-full px-5 py-3.5 pr-14 rounded-pill bg-creme text-prune placeholder:text-taupe text-base outline-none focus:ring-2 focus:ring-or/50 border-2 border-or caret-or selection:bg-or/30"
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-or pointer-events-none">
           {isLoading ? <IconSpinner /> : <IconSearch />}

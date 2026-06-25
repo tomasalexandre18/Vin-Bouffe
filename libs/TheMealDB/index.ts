@@ -1,6 +1,9 @@
 import {cachedFetch} from "@/libs/cache";
 
-const BASE_URL = process.env.THEMEALDB_BASE_URL ?? "https://www.themealdb.com/api/json/v1/1";
+// Extract valid URL — guards against .env values with stray quotes/chars (e.g. `"https://..."3`)
+const BASE_URL =
+  (process.env.THEMEALDB_BASE_URL ?? "").match(/https?:\/\/[^\s"']+/)?.[0] ??
+  "https://www.themealdb.com/api/json/v1/1";
 
 export interface MealSummary {
     idMeal: string;
@@ -102,7 +105,7 @@ export const TheMealDB = {
                 return [];
             }
             return data.meals;
-        }, 60 * 60 * 1000) // Cache for 1 hour
+        }, 60 * 60)
 
     },
 
@@ -113,6 +116,6 @@ export const TheMealDB = {
                 return null;
             }
             return normalizeMealResponse(data)
-        }, 60 * 60 * 1000) // Cache for 1 hour
+        }, 60 * 60)
     }
 };

@@ -1,5 +1,5 @@
 import WineCard from "./components/ui/WineCard";
-import SearchBar from "./components/ui/SearchBar";
+import BottomSearchBar from "./components/ui/BottomSearchBar";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -46,12 +46,13 @@ export default function Home() {
       </section>
 
       {/* Cards — image vignoble en fond, remonte sous le hero */}
-      <section className="relative flex-1 -mt-12 px-4 pb-5">
+      <section className="relative flex-1 -mt-12 px-4 pb-5 -mb-6">
         <Image
           src="/landing_page.png"
           alt=""
           fill
           unoptimized
+          priority
           className="object-cover object-center"
         />
         <div className="relative z-10 grid grid-cols-2 gap-3 pt-20">
@@ -67,10 +68,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Search bar — bordeaux en bas */}
-      <div className="fixed bottom-0 left-0 right-0 bg-bordeaux rounded-t-[2.5rem] px-4 pt-5 pb-24 z-40">
-        <SearchBar />
-      </div>
+      <BottomSearchBar />
     </main>
   );
 }

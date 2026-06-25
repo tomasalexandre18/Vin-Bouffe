@@ -1,16 +1,16 @@
 import { redis } from '@/libs/redis'
 
 export async function rateLimit(
-    identifier: string, // ip, user id, api key...
+    identifier: string,
     limit = 10,
     windowSeconds = 60
 ): Promise<{ allowed: boolean; remaining: number }> {
     const key = `ratelimit:${identifier}`
-    const count = await redis.incr(key)
 
-    if (count === 1) {
-        await redis.expire(key, windowSeconds)
-    }
+    // Pipeline makes INCR + EXPIRE atomic — avoids a key stuck without TTL
+    // if the process crashes between the two separate calls.
+    const results = await redis.pipeline().incr(key).expire(key, windowSeconds).exec()
+    const count = (results?.[0]?.[1] ?? 0) as number
 
     return {
         allowed: count <= limit,
