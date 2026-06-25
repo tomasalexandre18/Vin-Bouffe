@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Playfair_Display, Outfit, Caveat } from "next/font/google";
+import SmartTabBar from "./components/ui/SmartTabBar";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -35,9 +36,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${playfair.variable} ${outfit.variable} ${caveat.variable}`}
     >
-      <body>{children}</body>
+      <body className="h-dvh">
+        <SmartTabBar />
+        <div className="h-dvh overflow-auto">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

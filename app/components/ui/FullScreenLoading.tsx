@@ -28,7 +28,9 @@ function getRandomPhrase(exclude: string | null = null) {
 }
 
 export default function FullScreenLoading({ force = false, minDuration = 3750 }: { force?: boolean; minDuration?: number }) {
-    const [phrase, setPhrase] = useState(getRandomPhrase());
+    // Start with a fixed phrase — getRandomPhrase() uses Math.random() which differs
+    // between SSR and client and causes a hydration mismatch.
+    const [phrase, setPhrase] = useState(loadingPhrases[0]);
     const [timerDone, setTimerDone] = useState(false);
     const [exiting, setExiting] = useState(false);
     const [hidden, setHidden] = useState(false);
