@@ -1,3 +1,5 @@
+import {cachedFetch} from "@/libs/cache";
+
 const BASE_URL = process.env.THEMEALDB_BASE_URL ?? "https://www.themealdb.com/api/json/v1/1";
 
 export interface MealSummary {
@@ -91,16 +93,26 @@ async function fetchJSON<T>(url: string): Promise<T> {
 }
 
 export const TheMealDB = {
-    getMealsByIngredient: (ingredient: string) =>
-        fetchJSON<{ meals: MealSummary[] | null }>(
-            `${BASE_URL}/filter.php?i=${encodeURIComponent(ingredient)}`
-        ),
+    getMealsByIngredient: (ingredient: string) => {
+        return cachedFetch("TheMealDB.getMealsByIngredient:" + ingredient, async () => {
+            const data = await fetchJSON<{ meals: MealSummary[] | null }>(
+                `${BASE_URL}/filter.php?i=${encodeURIComponent(ingredient)}`
+            );
+            if (!data.meals) {
+                return [];
+            }
+            return data.meals;
+        }, 60 * 60 * 1000) // Cache for 1 hour
+
+    },
 
     getMealById: async (id: string) => {
-        const data = await fetchJSON<{ meals: MealRaw[] }>(`${BASE_URL}/lookup.php?i=${encodeURIComponent(id)}`);
-        if (!data.meals) {
-            return null;
-        }
-        return normalizeMealResponse(data)
+        return cachedFetch("TheMealDB.getMealById:" + id, async () => {
+            const data = await fetchJSON<{ meals: MealRaw[] }>(`${BASE_URL}/lookup.php?i=${encodeURIComponent(id)}`);
+            if (!data.meals) {
+                return null;
+            }
+            return normalizeMealResponse(data)
+        }, 60 * 60 * 1000) // Cache for 1 hour
     }
 };
