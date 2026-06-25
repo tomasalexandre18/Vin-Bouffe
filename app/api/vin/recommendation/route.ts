@@ -1,11 +1,11 @@
 import prisma from "@/libs/db";
-import {Meal, TheMealDB} from "@/libs/TheMealDB";
+import {TheMealDB} from "@/libs/TheMealDB";
 import {shuffleArray} from "@/libs/helper/shuffle";
 import {rateLimit} from "@/libs/rate-limit";
 
 export async function GET(request: Request): Promise<Response> {
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    const ok = await rateLimit(ip, 3, 60); // 10 requests per minute
+    const ok = await rateLimit(ip, 20, 60); // 10 requests per minute
     if (!ok.allowed) {
         return Response.json({ message: 'Too many requests' }, { status: 429 });
     }
@@ -39,20 +39,19 @@ export async function GET(request: Request): Promise<Response> {
         mapping.map(map => TheMealDB.getMealsByIngredient(map.the_meal_text))
     );
 
-    const final_recommended_meal = results.flatMap((meal, i) => {
-        if (!meal) {
+    const final_recommended_meal = results.flatMap((meals, i) => {
+        if (!meals || meals.length === 0) {
             console.log(`No meals found for ingredient: ${mapping[i].the_meal_text}`);
             return [];
         }
-        return [meal["meals"]] as Meal[];
+        return meals;
     });
 
     if (final_recommended_meal.length === 0) {
         return Response.json({ message: 'No recommended meals found for this wine' }, { status: 404 })
     }
 
-    const recommended_meal = final_recommended_meal.flat().filter(n => n !== null);
-    shuffleArray(recommended_meal);
+    shuffleArray(final_recommended_meal);
 
-    return Response.json(recommended_meal);
+    return Response.json({recommended_meal: final_recommended_meal, wine: wine});
 }
