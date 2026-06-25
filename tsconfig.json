@@ -28,7 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "app/listdish"  ],
+    "**/*.mts"],
   "exclude": ["node_modules"]
 }
