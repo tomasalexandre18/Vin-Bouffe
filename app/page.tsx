@@ -1,67 +1,75 @@
-import FilterPill from "./components/ui/FilterPill";
+import WineCard from "./components/ui/WineCard";
 import SearchBar from "./components/ui/SearchBar";
-import Divider from "./components/ui/Divider";
 import Image from "next/image";
-
-import Link from 'next/link'
+import Link from "next/link";
 
 const WINE_FILTERS = [
-  { label: "Red",      dotClass: "bg-bordeaux" },
-  { label: "White",    dotClass: "bg-sable" },
-  { label: "Rosé",     dotClass: "bg-bordeaux-soft" },
-  { label: "Sparkling", dotClass: "bg-or" },
+  {
+    label: "Red",
+    dotClass: "bg-bordeaux",
+    icon: "/wineIcon/bouteille-de-vin-rouge.svg",
+    descriptions: ["Bordeaux 2018", "Châteauneuf-du-Pape", "Côtes du Rhône"],
+  },
+  {
+    label: "White",
+    dotClass: "bg-sable",
+    icon: "/wineIcon/bouteille-de-vin-blanc.svg",
+    descriptions: ["Chablis Premier Cru", "Sancerre", "Pouilly-Fumé"],
+  },
+  {
+    label: "Rosé",
+    dotClass: "bg-bordeaux-soft",
+    icon: "/wineIcon/bouteille-de-vin-rose.svg",
+    descriptions: ["Provence Rosé", "Tavel"],
+  },
+  {
+    label: "Sparkling",
+    dotClass: "bg-or",
+    icon: "/wineIcon/bouteille-de-vin-petillant.svg",
+    descriptions: ["Champagne Brut"],
+  },
 ] as const;
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-bg">
-      {/* Hero */}
-      <section className="bg-bordeaux rounded-b-[2.5rem] px-6 pt-3 pb-5 flex flex-col gap-7 grow-2 basis-0 z-20">
-        {/* Logo */}
-        <div className="flex justify-center pt-3 grow basis-0 items-start">
-          <Image src="/winecore.svg" alt="WineCore" width={133} height={25} />
+    <main className="min-h-screen flex flex-col pb-24">
+      {/* Hero — bordeaux, overlaps image */}
+      <section className="relative bg-bordeaux rounded-b-[2.5rem] px-6 pt-8 pb-10 flex flex-col gap-5 z-20">
+        <div className="flex justify-center">
+          <Image src="/winecore.svg" alt="WineCore" width={133} height={25} priority />
         </div>
-
-        {/* Heading */}
         <Link href="/listdish">
-        <h1 className="font-display text-[2.15rem] leading-[1.15] font-semibold text-creme">
-          Which bottle pairs with this meal?
-        </h1>
+          <h1 className="font-display text-[2.15rem] leading-[1.15] font-semibold text-creme mt-2">
+            Which bottle pairs with this meal?
+          </h1>
         </Link>
-
-        {/* Search */}
-        <SearchBar />
-
-        {/* Filters */}
-        <div className="grid grid-cols-4 gap-2">
-          {WINE_FILTERS.map((f) => (
-            <FilterPill key={f.label} label={f.label} dotClass={f.dotClass} />
-          ))}
-        </div>
       </section>
 
-      {/* Bottom (OR + CTA) */}
-      <div className="flex flex-col flex-end overflow-hidden justify-center grow-2 basis-0 gap-2">
+      {/* Cards — image vignoble en fond, remonte sous le hero */}
+      <section className="relative flex-1 -mt-12 px-4 pb-5">
         <Image
           src="/landing_page.png"
           alt=""
           fill
           unoptimized
-          className="object-cover object-bottom"
+          className="object-cover object-center"
         />
-        <div className="inset-0 bg-bg/60"></div>
-
-        {/* OR divider */}
-        <div className="relative z-10 py-10">
-          <Divider label="OR" />
+        <div className="relative z-10 grid grid-cols-2 gap-3 pt-20">
+          {WINE_FILTERS.map((f) => (
+            <WineCard
+              key={f.label}
+              label={f.label}
+              dotClass={f.dotClass}
+              icon={f.icon}
+              descriptions={f.descriptions}
+            />
+          ))}
         </div>
+      </section>
 
-        {/* CTA */}
-        <div className="relative z-10 px-6 pb-12 flex items-end">
-          <button className="w-full py-4 rounded-pill bg-bordeaux text-creme font-medium text-base hover:bg-bordeaux-deep transition-colors cursor-pointer">
-            Scan my bottle
-          </button>
-        </div>
+      {/* Search bar — bordeaux en bas */}
+      <div className="fixed bottom-0 left-0 right-0 bg-bordeaux rounded-t-[2.5rem] px-4 pt-5 pb-24 z-40">
+        <SearchBar />
       </div>
     </main>
   );
