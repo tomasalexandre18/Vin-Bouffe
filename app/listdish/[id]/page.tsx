@@ -38,9 +38,13 @@ export default async function ListDishPage({
       </div>
 
       <div>
-        <h1>Recommandation</h1>
         <ul>
-          {meals.map((meal: any) => (<li key={meal.idMeal}> {meal.strMeal}</li>))}
+          {meals.map((meal: any) => (
+            <li key={meal.idMeal}>
+              <p>{meal.strMeal}</p>
+              <img src={meal.strMealThumb} alt={meal.strMeal} className=""/>
+            </li>
+          ))}
         </ul>
       </div>
 
