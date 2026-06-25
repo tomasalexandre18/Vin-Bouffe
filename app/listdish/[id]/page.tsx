@@ -38,11 +38,11 @@ export default async function ListDishPage({
       </div>
 
       <div>
-        <ul>
+        <ul className="grid grid-cols-2 gap-6 ml-3 mr-3">
           {meals.map((meal: any) => (
-            <li key={meal.idMeal}>
-              <p>{meal.strMeal}</p>
-              <img src={meal.strMealThumb} alt={meal.strMeal} className=""/>
+            <li key={meal.idMeal} className="flex flex-col rounded-xl overflow-hidden shadow-sm">
+              <p className="text-sm font-medium text-gray-900">{meal.strMeal}</p>
+              <img src={meal.strMealThumb} alt={meal.strMeal} className="h-40 w-full object-cover"/>
             </li>
           ))}
         </ul>
