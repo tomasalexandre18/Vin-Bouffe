@@ -64,7 +64,6 @@ export default async function ListDishPage({
           ))}
         </ul>
       </div>
-      <SearchBar/>
 
     </div>
   );
