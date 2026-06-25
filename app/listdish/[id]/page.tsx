@@ -32,7 +32,7 @@ export default function ListDishPage({
     const [fetching, setFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [meals, setMeals] = useState<MealSummary[]>(cached?.recommended_meal ?? []);
-    const [wine, setWine] = useState<never>(cached?.wine ?? null);
+    const [wine, setWine] = useState<{ type: string; wine_name: string; country: string; acidity: string; wine_id: number } | null>(cached?.wine ?? null);
 
 
     useEffect(() => {
@@ -66,7 +66,7 @@ export default function ListDishPage({
             {!loading && !error && meals.length === 0 && (
                 <div className="text-center mt-4">No recommended meals found for this wine.</div>
             )}
-            {!loading && !error && meals.length > 0 && (
+            {!loading && !error && meals.length > 0 && wine && (
           <div className="bg-white">
             <TabBar backUrl={"/"} />
             <div className="flex items-center m-4 gap-2 rounded-xl border-2 border-[#9D1B3F] bg-white p-2 shadow-md">
