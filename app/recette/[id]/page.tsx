@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             <h1>{data.name}</h1>
             {data.alternateName && <p><em>Alt: {data.alternateName}</em></p>}
 
-            <Image src={data.thumbnail} alt={data.name} style={{ width: "100%", borderRadius: 8 }} />
+            <img src={data.thumbnail} alt={data.name} style={{ width: "100%", borderRadius: 8 }} />
 
             <dl>
                 <dt><strong>ID</strong></dt>
