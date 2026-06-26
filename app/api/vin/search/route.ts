@@ -45,14 +45,21 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     try {
-        // Uses pg_trgm for fuzzy matching + unaccent for accent-insensitive comparison.
-        // $queryRaw tagged template parameterizes all values — never switch to $queryRawUnsafe with user input.
+        // word_similarity(query, wine_name) scores how well the query matches any word-sequence
+        // in the wine name — avoids short names always winning over longer relevant names.
+        // DISTINCT ON (wine_name, type) collapses duplicates that differ only by winery/vintage
+        // while preserving e.g. "Cabernet Sauvignon Red" vs "Cabernet Sauvignon White".
+        // unaccent_immutable() is an IMMUTABLE wrapper around unaccent() required by the GIN index.
         const results = await prisma.$queryRaw<WineRow[]>`
-            SELECT
-                wine_id, wine_name, type, country, region_name, winery_name, abv,
-                similarity(unaccent(wine_name), unaccent(${query})) AS score
-            FROM "wines"
-            WHERE unaccent(wine_name) % unaccent(${query})
+            SELECT wine_id, wine_name, type, country, region_name, winery_name, abv, score
+            FROM (
+                SELECT DISTINCT ON (unaccent_immutable(wine_name), type)
+                    wine_id, wine_name, type, country, region_name, winery_name, abv,
+                    word_similarity(unaccent_immutable(${query}), unaccent_immutable(wine_name)) AS score
+                FROM "wines"
+                WHERE unaccent_immutable(${query}) <% unaccent_immutable(wine_name)
+                ORDER BY unaccent_immutable(wine_name), type, word_similarity(unaccent_immutable(${query}), unaccent_immutable(wine_name)) DESC
+            ) deduped
             ORDER BY score DESC
             LIMIT ${limit}
         `;
