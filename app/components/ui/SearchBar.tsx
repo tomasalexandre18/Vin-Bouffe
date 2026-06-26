@@ -30,7 +30,7 @@ function IconSpinner() {
 }
 
 function WineItem({ wine }: { wine: WineResult }) {
-  const meta = [wine.type, wine.country].filter(Boolean).join(" · ");
+  const meta = [wine.type, wine.winery_name, wine.country].filter(Boolean).join(" · ");
   return (
     <li className="border-b border-line-l last:border-0">
       <Link
